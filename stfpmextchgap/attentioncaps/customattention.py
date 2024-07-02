@@ -159,19 +159,3 @@ class EXTCHGAP(nn.Module):
 
         # return self.ecasigmoid(fusion)
         return fusion
-
-
-if __name__ == "__main__":
-    # Test model
-    torch.manual_seed(42)
-    # model = CHGAP(256)
-    model = EXTAttention(256)
-    # model = EXTCHGAP(256, 256)
-
-    input_tensor = torch.randn(1, 256, 28, 28)
-    output = model(input_tensor)
-
-
-
-    print(output.shape)
-    # print(output)

@@ -1,12 +1,12 @@
 dataset:
   name: mvtec
   format: mvtec
-  path: ./datasets/MVTec
+  path: ./datasets/WMMixed
   category: bottle
   task: segmentation
-  train_batch_size: 32
-  eval_batch_size: 32
-  inference_batch_size: 32
+  train_batch_size: 8
+  eval_batch_size: 8
+  inference_batch_size: 8
   num_workers: 8
   image_size: 256 # dimensions to which images are resized (mandatory)
   center_crop: null # dimensions to which images are center-cropped after resizing (optional)
@@ -27,7 +27,7 @@ dataset:
     random_tile_count: 16
 
 model:
-  name: stfpm
+  name: stfpmextchgap
   backbone: resnet18
   layers:
     - layer1

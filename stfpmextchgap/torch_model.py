@@ -1,7 +1,3 @@
-"""PyTorch model for the STFPM model implementation."""
-
-# Copyright (C) 2022 Intel Corporation
-# SPDX-License-Identifier: Apache-2.0
 
 from __future__ import annotations
 
@@ -14,13 +10,6 @@ from anomalib.models.stfpmextchgap.custom_model import EXTCHGAPATTENTION
 
 
 class STFPMEXTCHGAPModel(nn.Module):
-    """STFPM: Student-Teacher Feature Pyramid Matching for Unsupervised Anomaly Detection.
-
-    Args:
-        layers (list[str]): Layers used for feature extraction
-        input_size (tuple[int, int]): Input size for the model.
-        backbone (str, optional): Pre-trained model backbone. Defaults to "resnet18".
-    """
 
     def __init__(
         self,
@@ -38,8 +27,7 @@ class STFPMEXTCHGAPModel(nn.Module):
             backbone=self.backbone, pre_trained=False, layers=layers, requires_grad=True
         )
 
-        # Create the anomaly heatmap generator whether tiling is set.
-        # TODO: Check whether Tiler is properly initialized here.
+        
         if self.tiler:
             image_size = (self.tiler.tile_size_h, self.tiler.tile_size_w)
         else:
@@ -47,17 +35,7 @@ class STFPMEXTCHGAPModel(nn.Module):
         self.anomaly_map_generator = AnomalyMapGenerator(image_size=image_size)
 
     def forward(self, images: Tensor) -> Tensor | dict[str, Tensor] | tuple[dict[str, Tensor]]:
-        """Forward-pass images into the network.
-
-        During the training mode the model extracts the features from the teacher and student networks.
-        During the evaluation mode, it returns the predicted anomaly map.
-
-        Args:
-          images (Tensor): Batch of images.
-
-        Returns:
-          Teacher and student features when in training mode, otherwise the predicted anomaly maps.
-        """
+        
         if self.tiler:
             images = self.tiler.tile(images)
         teacher_features_combined = self.teacher_model(images)

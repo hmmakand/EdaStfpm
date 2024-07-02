@@ -70,27 +70,3 @@ class EXTCHGAPATTENTION(nn.Module):
         
         return (features, normfeatures)
     
-    
-
-
-# # test TFastflowModel
-# if __name__ == "__main__":
-#     input_size = (64, 64)
-#     backbone = "resnet18"
-#     layers = ["layer1", "layer2", "layer3"]
-#     model = STFPMATTENTION(input_size=input_size, backbone=backbone, layers=layers, requires_grad=False)
-
-# # # #     model.eval()
-#     # print(model)
-#     input_tensor = torch.rand(4, 3, 64, 64)
-#     output_tensor = model(input_tensor)
-#     # print(output_tensor)
-#     print(len(output_tensor[0]))
-# # #     print(output_tensor[0].shape, output_tensor[1].shape, output_tensor[2].shape)
-
-#     print(output_tensor[0]['layer1'].shape, output_tensor[0]['layer2'].shape, output_tensor[0]['layer3'].shape)
-#     # print(output_tensor['attention_1'].shape, output_tensor['attention_2'].shape, output_tensor['attention_3'].shape)
-#     print(output_tensor[1]['norm_1'].shape, output_tensor[1]['norm_2'].shape, output_tensor[1]['norm_3'].shape)
-#     print(output_tensor[0]['layer1'].requires_grad, output_tensor[0]['layer2'].requires_grad, output_tensor[0]['layer3'].requires_grad,)
-#     # print(output_tensor['attention_1'].requires_grad, output_tensor['attention_2'].requires_grad, output_tensor['attention_3'].requires_grad,)
-#     print(output_tensor[1]['norm_1'].requires_grad, output_tensor[1]['norm_2'].requires_grad, output_tensor[1]['norm_3'].requires_grad,)

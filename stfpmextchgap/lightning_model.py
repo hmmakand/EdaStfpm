@@ -1,11 +1,3 @@
-"""STFPM: Student-Teacher Feature Pyramid Matching for Unsupervised Anomaly Detection.
-
-https://arxiv.org/abs/2103.04257
-"""
-
-# Copyright (C) 2022 Intel Corporation
-# SPDX-License-Identifier: Apache-2.0
-
 from __future__ import annotations
 
 import torch
@@ -24,13 +16,6 @@ __all__ = ["StfpmextchgapLightning"]
 
 @MODEL_REGISTRY
 class Stfpmextchgap(AnomalyModule):
-    """PL Lightning Module for the STFPM algorithm.
-
-    Args:
-        input_size (tuple[int, int]): Size of the model input.
-        backbone (str): Backbone CNN network
-        layers (list[str]): Layers to extract features from the backbone CNN
-    """
 
     def __init__(
         self,
@@ -48,16 +33,7 @@ class Stfpmextchgap(AnomalyModule):
         self.loss = STFPMEXTCHGAPLoss()
 
     def training_step(self, batch: dict[str, str | Tensor], *args, **kwargs) -> STEP_OUTPUT:
-        """Training Step of STFPM.
-
-        For each batch, teacher and student and teacher features are extracted from the CNN.
-
-        Args:
-          batch (dict[str, str | Tensor]): Input batch
-
-        Returns:
-          Loss value
-        """
+        
         self.model.teacher_model.eval()
         teacher_features, attn_teacher_features, student_features = self.model.forward(batch["image"])
         loss = self.loss(teacher_features, attn_teacher_features, student_features)
@@ -65,29 +41,13 @@ class Stfpmextchgap(AnomalyModule):
         return {"loss": loss}
 
     def validation_step(self, batch: dict[str, str | Tensor], *args, **kwargs) -> STEP_OUTPUT:
-        """Validation Step of STFPM.
-
-        Similar to the training step, student/teacher features are extracted from the CNN for each batch, and
-        anomaly map is computed.
-
-        Args:
-          batch (dict[str, str | Tensor]): Input batch
-
-        Returns:
-          Dictionary containing images, anomaly maps, true labels and masks.
-          These are required in `validation_epoch_end` for feature concatenation.
-        """
+        
         batch["anomaly_maps"] = self.model(batch["image"])
 
         return batch
 
 
 class StfpmextchgapLightning(Stfpmextchgap):
-    """PL Lightning Module for the STFPM algorithm.
-
-    Args:
-        hparams (DictConfig | ListConfig): Model params
-    """
 
     def __init__(self, hparams: DictConfig | ListConfig) -> None:
         super().__init__(
@@ -99,14 +59,7 @@ class StfpmextchgapLightning(Stfpmextchgap):
         self.save_hyperparameters(hparams)
 
     def configure_callbacks(self) -> list[EarlyStopping]:
-        """Configure model-specific callbacks.
-
-        Note:
-            This method is used for the existing CLI.
-            When PL CLI is introduced, configure callback method will be
-                deprecated, and callbacks will be configured from either
-                config.yaml file or from CLI.
-        """
+        
         early_stopping = EarlyStopping(
             monitor=self.hparams.model.early_stopping.metric,
             patience=self.hparams.model.early_stopping.patience,
@@ -115,26 +68,9 @@ class StfpmextchgapLightning(Stfpmextchgap):
         return [early_stopping]
 
     def configure_optimizers(self) -> torch.optim.Optimizer:
-        """Configures optimizers.
-
-        Note:
-            This method is used for the existing CLI.
-            When PL CLI is introduced, configure optimizers method will be
-                deprecated, and optimizers will be configured from either
-                config.yaml file or from CLI.
-
-        Returns:
-            Optimizer: SGD optimizer
-        """
         return optim.SGD(
             params=self.model.student_model.parameters(),
             lr=self.hparams.model.lr,
             momentum=self.hparams.model.momentum,
             weight_decay=self.hparams.model.weight_decay,
         )
-        # return optim.RMSprop(
-        #     params=self.model.student_model.parameters(),
-        #     lr=self.hparams.model.lr,
-        #     momentum=self.hparams.model.momentum,
-        #     weight_decay=self.hparams.model.weight_decay,
-        # )

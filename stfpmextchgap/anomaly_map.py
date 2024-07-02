@@ -30,10 +30,6 @@ class AnomalyMapGenerator(nn.Module):
        
         batch_size = list(attn_teacher_features.values())[0].shape[0]
         anomaly_map = torch.ones(batch_size, 1, self.image_size[0], self.image_size[1])
-        # for layer in teacher_features.keys():
-        #     layer_map = self.compute_layer_map(teacher_features[layer], student_features[layer])
-        #     anomaly_map = anomaly_map.to(layer_map.device)
-        #     anomaly_map *= layer_map
 
         # between teacher norm and student layer
         for attn_teacher_key, student_key in zip(attn_teacher_features.keys(), student_features.keys()):

@@ -1,4 +1,5 @@
 # EdaStfpm
+Efficient Dual-Attention-Based Knowledge  Distillation Network for Unsupervised  Wafer Map Anomaly Detection
 
 ## please follow the new Releases form Anomalib repo [https://github.com/openvinotoolkit/anomalib] to update the code if necessary. the version is used in this code is an v0.7.0. Also for feature extraction there has some changes in the repo for add functionality.
 
